@@ -2,7 +2,13 @@ import nodemailer from "nodemailer";
 import User from "@/models/userModel";
 import bcrypt from "bcryptjs";
 
-export const sendEmail = async ({ email, emailType, userId }: any) => {
+interface EmailProps {
+    email: string;
+    emailType: 'VERIFY' | 'RESET';
+    userId: string;
+}
+
+export const sendEmail = async ({ email, emailType, userId }: EmailProps) => {
     try {
         const hashedToken = await bcrypt.hash(userId.toString(), 10)
 
@@ -14,7 +20,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
             await User.findByIdAndUpdate(userId, { forgotPasswordToken: hashedToken, forgotPasswordExpiry: Date.now() + 3600000 })
         }
 
-        const transpoter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             
                 host: "sandbox.smtp.mailtrap.io",
                 port: 2525,
@@ -35,10 +41,11 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
             <h1>Important: If you are first time verifying your email,Verify before log in, also please check your spam folder for the verification email.</h1>`
         }
 
-        const mailresponse = await transpoter.sendMail(mailOptions)
+        const mailresponse = await transporter.sendMail(mailOptions)
         return mailresponse
 
-    } catch (error: any) {
-        throw new Error(error.message)
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error";
+        throw new Error(errorMessage);
     }
 }

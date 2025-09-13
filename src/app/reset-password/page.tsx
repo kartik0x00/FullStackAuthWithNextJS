@@ -60,9 +60,14 @@ const ResetPasswordPage: React.FC = () => {
             } else {
                 setError("Failed to reset password. Please try again.");
             }
-        } catch (err: any) {
-            if (err.response?.status === 400) {
-                setError("Invalid or expired reset token. Please request a new password reset.");
+        } catch (err: unknown) {
+            if (err instanceof Error && 'response' in err) {
+                const axiosError = err as { response?: { status?: number } };
+                if (axiosError.response?.status === 400) {
+                    setError("Invalid or expired reset token. Please request a new password reset.");
+                } else {
+                    setError("Failed to reset password. Please try again.");
+                }
             } else {
                 setError("Failed to reset password. Please try again.");
             }

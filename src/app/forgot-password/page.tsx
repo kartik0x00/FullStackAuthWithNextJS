@@ -25,6 +25,7 @@ const ForgotPasswordPage: React.FC = () => {
                 setError("Failed to send reset link. Please try again.");
             }
         } catch (err) {
+            console.error("Error sending reset link:", err);
             setError("Failed to send reset link. Please try again.");
         } finally {
             setLoading(false);
@@ -37,7 +38,7 @@ const ForgotPasswordPage: React.FC = () => {
                 <div className="text-center mb-8">
                     <div className="text-6xl mb-4">🔐</div>
                     <h1 className="text-3xl font-bold text-white mb-2">Forgot Password?</h1>
-                    <p className="text-gray-400">No worries, we'll send you reset instructions</p>
+                    <p className="text-gray-400">No worries, we&apos;ll send you reset instructions</p>
                 </div>
 
                 {submitted ? (
@@ -53,7 +54,7 @@ const ForgotPasswordPage: React.FC = () => {
                         
                         <div className="space-y-4">
                             <p className="text-gray-400 text-sm">
-                                Didn't receive the email? Check your spam folder or try again.
+                                Didn&apos;t receive the email? Check your spam folder or try again.
                             </p>
                             <button
                                 onClick={() => {setSubmitted(false); setEmail("");}}

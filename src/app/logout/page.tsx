@@ -2,11 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React from "react";
 
 export default function LogoutPage() {
     const router = useRouter();
-    //const [loading, setLoading] = React.useState(true);
 
     const logout = async () => {
         try {

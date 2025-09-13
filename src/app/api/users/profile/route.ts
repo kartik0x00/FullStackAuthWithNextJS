@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
             data: user 
         }, { status: 200 });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Error in fetching user profile:", error);
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }

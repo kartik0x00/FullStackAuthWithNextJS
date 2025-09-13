@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
@@ -20,8 +19,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
 }
 
-
-
-const config = {
-    matcher: ["/profile", "/login", "/signup", "/logout",],
+export const config = {
+    matcher: ["/profile", "/login", "/signup", "/logout"],
 };

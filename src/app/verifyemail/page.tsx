@@ -2,17 +2,15 @@
 
 import axios from "axios";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState, useCallback } from "react";
 
 export default function VerifyEmailPage() {
     const [verified, setVerified] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState("");
-    const router = useRouter();
 
-    const verifyEmailFunction = async () => {
+    const verifyEmailFunction = useCallback(async () => {
         try {
             setLoading(true);
             const response = await axios.post('/api/users/verifyemail', { token });
@@ -20,17 +18,22 @@ export default function VerifyEmailPage() {
                 setVerified(true);
                 setError("");
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Error during email verification:", error);
-            if (error.response?.status === 400) {
-                setError("Invalid or expired verification token. Please request a new verification email.");
+            if (error instanceof Error && 'response' in error) {
+                const axiosError = error as { response?: { status?: number } };
+                if (axiosError.response?.status === 400) {
+                    setError("Invalid or expired verification token. Please request a new verification email.");
+                } else {
+                    setError("Failed to verify email. Please try again or contact support.");
+                }
             } else {
                 setError("Failed to verify email. Please try again or contact support.");
             }
         } finally {
             setLoading(false);
         }
-    };
+    }, [token]);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -47,7 +50,7 @@ export default function VerifyEmailPage() {
         if (token.length > 0) {
             verifyEmailFunction();
         }
-    }, [token]);
+    }, [token, verifyEmailFunction]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
